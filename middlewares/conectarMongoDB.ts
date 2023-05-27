@@ -16,9 +16,9 @@ export const conectarMongpDB = (handler:NextApiHandler) => async (req: NextApiRe
         return res.status(500).json({ error : 'ENV de configuração do banco, não informado.'});
     }
     
-    mongoose.connection.on('connected', () => console.log('Banco de dados conectado.')); // Essa linha de código define um ouvinte de evento no objeto mongoose.connection para o evento 'connected'.
-    // Quando a conexão com o banco de dados é estabelecida com sucesso, o evento 'connected' é disparado, e a função de callback associada a esse evento é executada. No caso desse código, a função de callback é uma arrow function () => console.log('Banco de dados conectado.'), que imprime a mensagem "Banco de dados conectado." no console.
+    mongoose.connection.on('connected', () => console.log('Banco de dados conectado.'));
     mongoose.connection.on('error', error => console.log(`Ocorreu erro ao conectar no banco: ${error}`));
+    //Essas duas linhas de código configuram os eventos 'connected' e 'error' para a conexão do Mongoose antes de estabelecer a conexão com o banco de dados usando await mongoose.connect(DB_CONEXAO_STRING). Isso garante que o código estará preparado para lidar com esses eventos assim que a conexão for estabelecida.
     await mongoose.connect(DB_CONEXAO_STRING);
 
     // agora posso seguir para o endpoit, pois estou conectado no banco.
