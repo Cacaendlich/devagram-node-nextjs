@@ -3,8 +3,8 @@ import { conectarMongpDB } from '../../middlewares/conectarMongoDB';
 import type {respostaPadraoMsg} from '../../types/respostaPadraoMsg';
 import type {loginResposta} from '../../types/loginResposta';
 import { UsuarioModel } from '../../models/usuarioModel';
-import md5 from 'md5';
-import jwt from 'jsonwebtoken';
+import md5 from 'md5'; //criptográfia
+import jwt from 'jsonwebtoken'; // gestão do token
 
     const endpointLogin = async (req: NextApiRequest, res: NextApiResponse<respostaPadraoMsg | loginResposta>) => {
 
