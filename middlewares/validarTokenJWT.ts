@@ -2,7 +2,7 @@ import type {NextApiRequest, NextApiResponse, NextApiHandler } from "next"; // N
 import type {respostaPadraoMsg} from '../types/respostaPadraoMsg';
 import jwt, {JwtPayload} from "jsonwebtoken";
 
-export const validarTokenJWT = (handler: NextApiHandler) => async (req: NextApiRequest, res: NextApiResponse<respostaPadraoMsg>) => {
+export const validarTokenJWT = (handler: NextApiHandler) =>  (req: NextApiRequest, res: NextApiResponse<respostaPadraoMsg>) => {
 
     try {
         
@@ -29,7 +29,7 @@ export const validarTokenJWT = (handler: NextApiHandler) => async (req: NextApiR
                 return res.status(401).json({error: 'Não foi possível validar o token de acesso.'});
             }
 
-            const decoded = await jwt.verify(token, MINHA_CHAVE_JWT) as JwtPayload;
+            const decoded = jwt.verify(token, MINHA_CHAVE_JWT) as JwtPayload;
             // A função jwt.verify() verifica e decodifica um token JWT. Recebe o token a ser verificado e a chave de assinatura e criptografia.
             // O tipo "JwtPayload" é usado para fazer a atribuição de tipo ao resultado decodificado do token JWT usando o operador "as" em TypeScript.
 
