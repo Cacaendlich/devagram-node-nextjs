@@ -6,10 +6,12 @@ import {conectarMongpDB} from '../../middlewares/conectarMongoDB';
 import md5 from 'md5';
 
 const endpointCadastro = async (req: NextApiRequest, res: NextApiResponse<respostaPadraoMsg>) => {
-    //validaçãoas
+    //validações
     if (req.method === 'POST') {
-        const usuario = req.body as (cadastroRequisicao);
+        const usuario = req.body as (cadastroRequisicao); //As asserções de tipo (as(...);) em TypeScript, permitem especificar tipos mais específicos.
 
+
+         //depois usar regex para as validações ↓
         if (!usuario.nome || usuario.nome.length < 2){
             return res.status(400).json({error: 'Nome inválido.'});
         }
