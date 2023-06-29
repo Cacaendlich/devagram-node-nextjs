@@ -12,42 +12,61 @@ const handler = nc()
     .use(upload.single('file')) //Middleware para upload de arquivo único com o nome 'file'
     .post(
         async (req: NextApiRequest, res: NextApiResponse<respostaPadraoMsg>) => {
-            //validações
-            const usuario = req.body as (cadastroRequisicao); //As asserções de tipo (as(...);) em TypeScript, permitem especificar tipos mais específicos.
+            try {
+                console.log('cadastro endpoint', req);
+
+                //validações
+                const usuario = req.body as (cadastroRequisicao); //As asserções de tipo (as(...);) em TypeScript, permitem especificar tipos mais específicos.
 
 
-            //depois usar regex para as validações ↓
+                //depois usar regex para as validações ↓
 
-            // Validação do nome do usuário
-            if (!usuario.nome || usuario.nome.length < 2) {
-                return res.status(400).json({ error: 'Nome inválido.' });
+                // Validação do nome do usuário
+                if (!usuario.nome || usuario.nome.length < 2) {
+                    return res.status(400).json({ error: 'Nome inválido.' });
+                }
+
+                // Validação do e-mail do usuário
+                if (!usuario.email || usuario.email.length < 5 || !usuario.email.includes('@') || !usuario.email.includes('.')) {
+                    return res.status(400).json({ error: 'Email inválido.' });
+                }
+
+                // Validação da senha do usuário
+                if (!usuario.senha || usuario.senha.length < 4) {
+                    return res.status(400).json({ error: 'Senha inválido.' });
+                }
+
+                // Verificação se já existe usuário com o mesmo e-mail
+                const usuariosComOMesmoEmail = await UsuarioModel.find({ email: usuario.email });
+                if (usuariosComOMesmoEmail && usuariosComOMesmoEmail.length > 0) {
+                    return res.status(400).json({ error: 'Já existe uma conta com o email informado.' });
+
+                }
+
+                // enviar a imagem do multer para o cosmic
+                //porcessamento da imagem
+                const image = await uploadImagemCosmic(req);
+
+                // salvar no banco de dados
+                const UsuarioASerSalvo = {
+                    nome: usuario.nome,
+                    email: usuario.email,
+                    senha: md5(usuario.senha), //// Criptografa a senha usando md5 antes de salvar
+                    avatar: image?.media?.url
+                }
+                await UsuarioModel.create(UsuarioASerSalvo);
+                return res.status(200).json({ msg: 'Usuário cadastrado com sucesso.' });
+            } catch (e) {
+                console.log(e);
+                return res.status(500).json({ error: 'erro ao cadastrar usuario.' });
             }
 
-             // Validação do e-mail do usuário
-            if (!usuario.email || usuario.email.length < 5 || !usuario.email.includes('@') || !usuario.email.includes('.')) {
-                return res.status(400).json({ error: 'Email inválido.' });
-            }
-
-             // Validação da senha do usuário
-            if (!usuario.senha || usuario.senha.length < 4) {
-                return res.status(400).json({ error: 'Senha inválido.' });
-            }
-
-            // Verificação se já existe usuário com o mesmo e-mail
-            const usuariosComOMesmoEmail = await UsuarioModel.find({ email: usuario.email });
-            if (usuariosComOMesmoEmail && usuariosComOMesmoEmail.length > 0) {
-                return res.status(400).json({ error: 'Já existe uma conta com o email informado.' });
-
-            }
-
-            // salvar no banco de dados
-            const UsuarioASerSalvo = {
-                nome: usuario.nome,
-                email: usuario.email,
-                senha: md5(usuario.senha) //// Criptografa a senha usando md5 antes de salvar
-            }
-            await UsuarioModel.create(UsuarioASerSalvo);
-            return res.status(200).json({ msg: 'Usuário cadastrado com sucesso.' });
         });
+// mudando configuração padrão do next.js nessa API, pra que o bodyPArse não a transforne em json.
+export const confg = {
+    api: {
+        bodyParser: false
+    }
+};
 
 export default conectarMongpDB(handler);
