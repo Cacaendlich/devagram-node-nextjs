@@ -1,46 +1,53 @@
-import type {NextApiRequest, NextApiResponse} from 'next';
+// Essas linhas importam os módulos e tipos necessários para a função de API.
+import type { NextApiRequest, NextApiResponse } from 'next';
 import { respostaPadraoMsg } from '../../types/respostaPadraoMsg';
 import { cadastroRequisicao } from '../../types/cadastroRequisicao';
-import {UsuarioModel} from '../../models/usuarioModel';
-import {conectarMongpDB} from '../../middlewares/conectarMongoDB';
+import { UsuarioModel } from '../../models/usuarioModel';
+import { conectarMongpDB } from '../../middlewares/conectarMongoDB';
 import md5 from 'md5';
+import { upload, uploadImagemCosmic } from '../../services/uploadImagemCosmic';
+import nc from 'next-connect';
 
-const endpointCadastro = async (req: NextApiRequest, res: NextApiResponse<respostaPadraoMsg>) => {
-    //validações
-    if (req.method === 'POST') {
-        const usuario = req.body as (cadastroRequisicao); //As asserções de tipo (as(...);) em TypeScript, permitem especificar tipos mais específicos.
+const handler = nc()
+    .use(upload.single('file')) //Middleware para upload de arquivo único com o nome 'file'
+    .post(
+        async (req: NextApiRequest, res: NextApiResponse<respostaPadraoMsg>) => {
+            //validações
+            const usuario = req.body as (cadastroRequisicao); //As asserções de tipo (as(...);) em TypeScript, permitem especificar tipos mais específicos.
 
 
-         //depois usar regex para as validações ↓
-        if (!usuario.nome || usuario.nome.length < 2){
-            return res.status(400).json({error: 'Nome inválido.'});
-        }
+            //depois usar regex para as validações ↓
 
-        if (!usuario.email || usuario.email.length < 5 || !usuario.email.includes('@') || !usuario.email.includes('.')){
-            return res.status(400).json({error: 'Email inválido.'});
-        }
+            // Validação do nome do usuário
+            if (!usuario.nome || usuario.nome.length < 2) {
+                return res.status(400).json({ error: 'Nome inválido.' });
+            }
 
-        if (!usuario.senha || usuario.senha.length < 4 ){
-            return res.status(400).json({error: 'Senha inválido.'});
-        }
+             // Validação do e-mail do usuário
+            if (!usuario.email || usuario.email.length < 5 || !usuario.email.includes('@') || !usuario.email.includes('.')) {
+                return res.status(400).json({ error: 'Email inválido.' });
+            }
 
-        // validação se já existe usuário com o mesmo e-mail
-        const usuariosComOMesmoEmail = await UsuarioModel.find({email: usuario.email});
-        if (usuariosComOMesmoEmail && usuariosComOMesmoEmail.length > 0){
-            return res.status(400).json({error: 'Já existe uma conta com o email informado.'});
+             // Validação da senha do usuário
+            if (!usuario.senha || usuario.senha.length < 4) {
+                return res.status(400).json({ error: 'Senha inválido.' });
+            }
 
-        }
+            // Verificação se já existe usuário com o mesmo e-mail
+            const usuariosComOMesmoEmail = await UsuarioModel.find({ email: usuario.email });
+            if (usuariosComOMesmoEmail && usuariosComOMesmoEmail.length > 0) {
+                return res.status(400).json({ error: 'Já existe uma conta com o email informado.' });
 
-        // salvar no banco de dados
-        const UsuarioASerSalvo = {
-            nome : usuario.nome,
-            email : usuario.email,
-            senha : md5(usuario.senha)
-        }
-        await UsuarioModel.create(UsuarioASerSalvo);
-        return res.status(200).json({msg: 'Usuário cadastrado com sucesso.'});
-    }
-    return res.status(405).json({error: 'Método informado não é válido.'});
-}
+            }
 
-export default conectarMongpDB(endpointCadastro);
+            // salvar no banco de dados
+            const UsuarioASerSalvo = {
+                nome: usuario.nome,
+                email: usuario.email,
+                senha: md5(usuario.senha) //// Criptografa a senha usando md5 antes de salvar
+            }
+            await UsuarioModel.create(UsuarioASerSalvo);
+            return res.status(200).json({ msg: 'Usuário cadastrado com sucesso.' });
+        });
+
+export default conectarMongpDB(handler);
