@@ -2,12 +2,12 @@ import multer from 'multer';
 import { createBucketClient } from '@cosmicjs/sdk';
 
 
-// const{BUCKET_SLUG_DEVAGRAM, BUCKET_READ_KEY_DEVAGRAM, BUCKET_WRITE_KEY_DEVAGRAM} = process.env;
+const{BUCKET_SLUG_DEVAGRAM, BUCKET_READ_KEY_DEVAGRAM, BUCKET_WRITE_KEY_DEVAGRAM} = process.env;
 
 const bucketDevagram = createBucketClient({
-    bucketSlug: 'devagram-217dac60-15cc-11ee-8a26-535a71de0196',
-    readKey: 'YK2b7GnxbEvxh3QgNct7p2fb5cZFxCg31XIpr9OpYWh1Vjtn25',
-    writeKey: 'bNfP6bpQRpGcUhK2GJr2e1wTrhuD1MxRTkbrx6eJ9trxytHHie',
+    bucketSlug: BUCKET_SLUG_DEVAGRAM as string,
+    readKey: BUCKET_READ_KEY_DEVAGRAM as string,
+    writeKey:  BUCKET_WRITE_KEY_DEVAGRAM as string,
 });
 
 const storage = multer.memoryStorage(); //indica que os arquivos serão armazenados em memória como buffers, ou seja, os arquivos são temporariamente mantidos na memória RAM do servidor durante o processo de upload.
