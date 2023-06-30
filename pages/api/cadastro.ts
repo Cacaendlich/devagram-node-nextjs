@@ -63,7 +63,7 @@ const handler = nc()
 
         });
 // mudando configuração padrão do next.js nessa API, pra que o bodyPArse não a transforne em json.
-export const confg = {
+export const config = {
     api: {
         bodyParser: false
     }
