@@ -1,5 +1,5 @@
 import type{NextApiRequest, NextApiResponse} from 'next';
-import { conectarMongpDB } from '../../middlewares/conectarMongoDB';
+import { conectarMongoDB } from '../../middlewares/conectarMongoDB';
 import type {respostaPadraoMsg} from '../../types/respostaPadraoMsg';
 import type {loginResposta} from '../../types/loginResposta';
 import { UsuarioModel } from '../../models/usuarioModel';
@@ -30,4 +30,4 @@ import jwt from 'jsonwebtoken'; // gestão do token
         } return res.status(405).json({error: 'Método informado não é válido.'});
     }
 
-export default conectarMongpDB (endpointLogin); //Exporta a função endpointLogin envolta na função conectarMongpDB, que é usada para conectar ao MongoDB antes de executar a função do endpoint.
+export default conectarMongoDB (endpointLogin); //Exporta a função endpointLogin envolta na função conectarMongoDB, que é usada para conectar ao MongoDB antes de executar a função do endpoint.

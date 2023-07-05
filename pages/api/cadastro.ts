@@ -3,18 +3,17 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { respostaPadraoMsg } from '../../types/respostaPadraoMsg';
 import { cadastroRequisicao } from '../../types/cadastroRequisicao';
 import { UsuarioModel } from '../../models/usuarioModel';
-import { conectarMongpDB } from '../../middlewares/conectarMongoDB';
+import { conectarMongoDB } from '../../middlewares/conectarMongoDB';
 import md5 from 'md5';
 import { upload, uploadImagemCosmic } from '../../services/uploadImagemCosmic';
-import nc from 'next-connect';
+import nc from "next-connect";
 
 const handler = nc()
     .use(upload.single('file')) //Middleware para upload de arquivo único com o nome 'file'
     .post(
         async (req: NextApiRequest, res: NextApiResponse<respostaPadraoMsg>) => {
             try {
-                console.log('cadastro endpoint', req);
-
+                //console.log(res);
                 //validações
                 const usuario = req.body as (cadastroRequisicao); //As asserções de tipo (as(...);) em TypeScript, permitem especificar tipos mais específicos.
 
@@ -45,20 +44,20 @@ const handler = nc()
 
                 // enviar a imagem do multer para o cosmic
                 //porcessamento da imagem
-                const image = await uploadImagemCosmic(req);
+                const imagem = await uploadImagemCosmic(req);
 
                 // salvar no banco de dados
                 const UsuarioASerSalvo = {
                     nome: usuario.nome,
                     email: usuario.email,
                     senha: md5(usuario.senha), //// Criptografa a senha usando md5 antes de salvar
-                    avatar: image?.media?.url
+                    avatar: imagem?.media?.url
                 }
                 await UsuarioModel.create(UsuarioASerSalvo);
                 return res.status(200).json({ msg: 'Usuário cadastrado com sucesso.' });
-            } catch (e) {
+            } catch (e: any) {
                 console.log(e);
-                return res.status(500).json({ error: 'erro ao cadastrar usuario.' });
+                return res.status(500).json({ error: e.toString() });
             }
 
         });
@@ -69,4 +68,4 @@ export const config = {
     }
 };
 
-export default conectarMongpDB(handler);
+export default conectarMongoDB(handler);

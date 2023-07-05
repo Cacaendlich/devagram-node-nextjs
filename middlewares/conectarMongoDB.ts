@@ -2,8 +2,8 @@ import type {NextApiRequest, NextApiResponse, NextApiHandler } from "next";
 import mongoose, { Mongoose } from "mongoose";
 import type {respostaPadraoMsg} from '../types/respostaPadraoMsg';
 
-export const conectarMongpDB = (handler:NextApiHandler) => async (req: NextApiRequest, res: NextApiResponse<respostaPadraoMsg>) =>{
-    //  conectarMongpDB é um middleware que recebe um manipulador (handler) de API Next.js como parâmetro.
+export const conectarMongoDB = (handler:NextApiHandler) => async (req: NextApiRequest, res: NextApiResponse<respostaPadraoMsg>) =>{
+    //  conectarMongoDB é um middleware que recebe um manipulador (handler) de API Next.js como parâmetro.
     // verificar se o banco está conectado, se estiver segir para o endpoint ou para o proximo middleware.
     if (mongoose.connections[0].readyState) {
         return handler(req,res);
