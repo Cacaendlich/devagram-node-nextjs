@@ -13,7 +13,6 @@ const handler = nc()
     .post(
         async (req: NextApiRequest, res: NextApiResponse<respostaPadraoMsg>) => {
             try {
-                //console.log(res);
                 //validações
                 const usuario = req.body as (cadastroRequisicao); //As asserções de tipo (as(...);) em TypeScript, permitem especificar tipos mais específicos.
 
@@ -56,7 +55,7 @@ const handler = nc()
                 await UsuarioModel.create(UsuarioASerSalvo);
                 return res.status(200).json({ msg: 'Usuário cadastrado com sucesso.' });
             } catch (e: any) {
-                console.log(e);
+                //console.log(e);
                 return res.status(500).json({ error: e.toString() });
             }
 
