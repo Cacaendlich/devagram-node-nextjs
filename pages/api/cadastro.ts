@@ -15,7 +15,7 @@ const handler = nc()
             try {
                 //validações
                 const usuario = req.body as (cadastroRequisicao); //As asserções de tipo (as(...);) em TypeScript, permitem especificar tipos mais específicos.
-
+                //req.body é proveniente do pacote body-parser
 
                 //depois usar regex para as validações ↓
 
