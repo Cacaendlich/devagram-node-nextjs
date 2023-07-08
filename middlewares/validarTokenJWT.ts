@@ -42,8 +42,8 @@ export const validarTokenJWT = (handler: NextApiHandler) =>  (req: NextApiReques
                 req.query = {};
             }
 
-            req.query.userID = decoded._id;
-            //A propriedade userID está sendo adicionada ao objeto req.query, se ela ainda não existir. Se já existir, seu valor será atualizado com o valor de decoded._id.
+            req.query.userId = decoded._id;
+            //A propriedade userId está sendo adicionada ao objeto req.query, se ela ainda não existir. Se já existir, seu valor será atualizado com o valor de decoded._id.
         }
 
     } catch(e) {
