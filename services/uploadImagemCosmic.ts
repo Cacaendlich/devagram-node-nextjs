@@ -14,7 +14,10 @@ const storage = multer.memoryStorage(); //indica que os arquivos serão armazena
 const upload = multer({storage: storage}); //Esse objeto é configurado para utilizar o objeto de armazenamento criado anteriormente
 
 const uploadImagemCosmic = async (req: any) => {
-     console.log('uploadImagemCosmic', req?.data);
+    //console.log('uploadImagemCosmic req:', req);
+    //console.log('uploadImagemCosmic req.file:', req.file);
+    //console.log('uploadImagemCosmic req.file.originalname:', req.file.originalname);
+
     if (req?.file?.originalname) {
         const media_object = {
             originalname: req.file.originalname,
@@ -25,6 +28,8 @@ const uploadImagemCosmic = async (req: any) => {
 
         if(req.url && req.url.includes('publicacao')) {
             console.log('Imagem subiu para a pasta [publicacoes]');
+            //console.log('bucketDevagram.media:', bucketDevagram.media);
+
             return await bucketDevagram.media.insertOne({
                 media: media_object,
                 folder: 'publicacoes'
