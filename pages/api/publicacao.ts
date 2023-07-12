@@ -41,7 +41,6 @@ const handler = nc()
                 foto: image.media.url,
                 data: new Date()
             }
-
             await PublicacaoModel.create(publicacao); //chamando banco pra criar a publicação
 
             return res.status(200).json({ msg: 'Publicação criada com sucesso!' });

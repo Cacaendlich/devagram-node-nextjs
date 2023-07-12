@@ -21,6 +21,7 @@ const feedEndpoint = async (req: NextApiRequest, res: NextApiResponse<respostaPa
                 const publicacoes = await PublicacaoModel
                     .find({idUsuario : usuario._id}) //listar
                     .sort({data : -1}); // e ordenar '-1' é decrescente
+                    console.log(publicacoes);
 
                 return res.status(200).json(publicacoes);
             }
