@@ -58,5 +58,6 @@ export const config = {
         bodyParser: false
     }
 }
+// Ao usar api: { bodyParser: false }, o Next.js não processará automaticamente o corpo da solicitação para essa rota. Isso é útil quando se envia arquivos usando form-data e multer, permitindo acesso e processamento personalizado dos dados enviados.
 
 export default validarTokenJWT(conectarMongoDB(handler));
